@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Send Events demo</title>
+</head>
+
+<body>
+    <h1>Hey! Here is a Server-Sent Events demo</h1>
+    <div id="data">
+    </div>
+    <script>
+        const dataElem = document.getElementById('data');
+
+        const SERVER_STREAM_URL = 'http://localhost:8000/stream';
+        const eventSource = new EventSource(SERVER_STREAM_URL);
+
+        eventSource.onmessage = (message) => {
+            const logElem = document.createElement('h2');
+            logElem.textContent = `id: ${message.lastEventId}, userName: ${message.data}`;
+            dataElem.appendChild(logElem);
+        }
+
+        eventSource.addEventListener('end-of-stream', (endData) => {
+            const endElem = document.createElement('h2');
+            endElem.textContent = endData.data;
+            dataElem.appendChild(endElem);
+            eventSource.close();
+        })
+    </script>
+</body>
+
+</html>
